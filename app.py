@@ -3,9 +3,9 @@ import pandas as pd
 import joblib
 import numpy as np
 
-model=joblib.load("Logistic_Regresstion_Diabetes.pkl")
-scaler=joblib.load("scaler.pkl")
-expected_columns=joblib.load("columns.pkl")
+model=joblib.load("models/Logistic_Regresstion_Diabetes.pkl")
+scaler=joblib.load("models/scaler.pkl")
+expected_columns=joblib.load("models/columns.pkl")
 
 
 
