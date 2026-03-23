@@ -68,76 +68,86 @@ expected_columns=joblib.load("models/columns.pkl")
 
 st.markdown("""
     <style>
-    /* 🎨 1. NỀN TỔNG THỂ ỨNG DỤNG - Màu xám rất nhạt, hơi xanh */
+    /* 🎨 1. NỀN TỔNG THỂ - Xám cực nhẹ để làm nổi bật các Card trắng */
     .stApp {
-        background-color: #f0f4f0;
+        background-color: #f8fafc;
     }
     
-    /* 🎨 2. TIÊU ĐỀ CHÍNH - Nền trắng, chữ Xanh Lá Đậm */
+    /* 🎨 2. TIÊU ĐỀ CHÍNH - Nền Xanh đậm, Chữ Trắng để nổi bật */
     .main-title {
-        color: #2e7d32; /* Green 800 */
+        color: #ffffff; 
         text-align: center;
-        font-family: 'Segoe UI', sans-serif;
-        font-weight: 700;
-        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 800;
+        padding: 30px;
         margin-bottom: 30px;
-        background: black;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        background: linear-gradient(135deg, #1e4d2b 0%, #2e7d32 100%); /* Gradient Xanh Lá */
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(46, 125, 50, 0.2);
     }
 
-    /* 🎨 3. CÁC KHỐI CARD - Nền trắng, Viền trên Xanh Lá tươi */
+    /* 🎨 3. CÁC KHỐI CARD - Nền TRẮNG (thay vì Đen), Viền mỏng */
     .category-card {
-        background-color: black;
+        background-color: #ffffff;
         padding: 25px;
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         height: 100%;
-        border-top: 5px solid #66bb6a; /* Green 400 */
+        border-top: 5px solid #66bb6a; /* Viền trên Xanh tươi */
         margin-bottom: 20px;
+        border-left: 1px solid #e2e8f0;
+        border-right: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
     }
 
-    /* 🎨 4. MÀU CHỮ CHO NHÃN (LABELS) - Màu xám đen dễ đọc */
-    .stSelectbox label, .stSlider label {
-        color:black!important;
-        font-weight: 600 !important;
-    }
-
-    /* 🎨 5. NÚT DỰ ĐOÁN - Gradient Xanh Lá đậm đến tươi */
-    div.stButton > button:first-child {
-        background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
-        color: white;
-        border-radius: 30px;
-        width: 100%;
-        height: 60px;
-        font-size: 20px;
-        font-weight: bold;
-        border: none;
-        margin-top: 20px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
-        
-    }
-    category-card h3, .category-card .stSubheader {
-        color: #000000 !important;
-        font-family: 'Segoe UI', sans-serif;
+    /* 🎨 4. MÀU CHỮ TIÊU ĐỀ CON TRONG CARD */
+    .category-card h3 {
+        color: #1b5e20 !important; /* Xanh lá cực đậm */
+        font-size: 1.2rem;
         font-weight: 700;
-        border-bottom: 2px solid #eeeeee; /* Thêm đường gạch chân nhẹ cho đẹp */
-        padding-bottom: 10px;
         margin-bottom: 15px;
+        border-bottom: 2px solid #f0f4f0;
+        padding-bottom: 10px;
+    }
+
+    /* 🎨 5. MÀU CHỮ CHO NHÃN (LABELS) - Xám đậm chuyên nghiệp */
+    .stSelectbox label, .stSlider label, .stNumberInput label {
+        color: #334155 !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* 🎨 6. NÚT DỰ ĐOÁN - Gradient hiện đại */
+    div.stButton > button:first-child {
+        background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+        color: white !important;
+        border-radius: 12px;
+        width: 100%;
+        height: 55px;
+        font-size: 18px;
+        font-weight: 700;
+        border: none;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
     }
     
-    /* Hiệu ứng khi di chuột qua nút */
+    /* Hiệu ứng Hover nút */
     div.stButton > button:first-child:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
-        color: #ffffff;
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+        background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+        color: #ffffff !important;
+    }
+
+    /* 🎨 7. CHỈNH MÀU CÁC CỘT INPUT - Giúp text bên trong rõ hơn */
+    input {
+        color: #1e293b !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-title'>Hệ Thống Dự Đoán Tiểu Đường</h1>", unsafe_allow_html=True)
-st.write("---")
+st.markdown("<h1 class='main-title'>🩺 Hệ Thống Dự Đoán Tiểu Đường</h1>", unsafe_allow_html=True)
 
 # 3. HÀM HỖ TRỢ
 def yes_no_to_int(label):
