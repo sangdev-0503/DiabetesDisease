@@ -1,8 +1,10 @@
 streamlit
-scikit-learn
+tensorflow
+opencv-python
 pandas
 numpy
+scikit-learn
 joblib
-tensorflow>=2.10.0
-opencv-python>=4.5.0
-Pillow>=9.0.0
+Pillow
+matplotlib
+seaborn
