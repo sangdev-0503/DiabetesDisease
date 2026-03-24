@@ -1,23 +1,48 @@
 link app: https://diabetesdisease-app.streamlit.app/
-- Dự án Dự đoán Nguy cơ Tiểu đường sử dụng các thuật toán học máy tiên tiến để phân tích các chỉ số sức khỏe thực tế. Mục tiêu cốt lõi là xây dựng một công cụ hỗ trợ sàng lọc sớm bệnh lý dựa trên bằng chứng khoa học và số liệu cụ thể.
 
-Về quy trình xử lý, mình đã thực hiện phân tích tương quan giữa các biến số như chỉ số cơ thể, huyết áp và độ tuổi để tìm ra những yếu tố ảnh hưởng mạnh nhất. Dữ liệu sau đó được làm sạch và chuẩn hóa bằng kỹ thuật phân tỷ lệ chuẩn để đảm bảo các mô hình đạt được hiệu suất tối ưu nhất.
+🩺 Hệ Thống Chẩn Đoán Tiểu Đường Đa Phương Thức (Multimodal AI)
+Dự án này được chia làm 2 giai đoạn phát triển chính nhằm tối ưu hóa khả năng dự đoán dựa trên cả chỉ số lâm sàng và hình ảnh y tế.
 
-Hệ thống đánh giá bao gồm nhiều mô hình khác nhau từ hồi quy logistic đến các phương pháp kết hợp hiện đại như cây quyết định và tăng cường độ dốc. Việc thử nghiệm đa dạng mô hình giúp mình có cái nhìn khách quan về khả năng dự báo của từng thuật toán trên cùng một bộ dữ liệu.
+-  Giai đoạn 1: Dự đoán dựa trên Dữ liệu Bảng (Tabular Data)
+Trong giai đoạn này, chúng tôi tập trung xử lý bộ dữ liệu BRFSS (Behavioral Risk Factor Surveillance System) để tìm ra mô hình Machine Learning tối ưu nhất cho các chỉ số sức khỏe.
 
-Để nâng cao độ chính xác, mình đã áp dụng kỹ thuật tìm kiếm lưới để tối ưu hóa các tham số cốt lõi cho từng mô hình. Quá trình này giúp tinh chỉnh thuật toán đạt đến trạng thái hoạt động tốt nhất thay vì chỉ sử dụng các thiết lập mặc định thông thường.
+    1. Tiền xử lý dữ liệu (Data Engineering)
+Làm sạch:bộ dữ liệu đã được xử lý sơ bộ trước khi đưa vào python,bây giờ chỉ bao gồm Xử lý giá trị thiếu và gộp nhãn (0, 1, 2) thành nhãn nhị phân (0, 1).
 
-+) Hệ thống kiến thức kỹ thuật (Technical Skills)
-Để vận hành các mô hình trên, bạn đã thực hiện các kỹ thuật chuyên sâu sau:
+Cân bằng dữ liệu: Xử lý tình trạng mất cân bằng giữa nhóm người bệnh và người khỏe mạnh.
 
-- Exploratory Data Analysis (EDA): Khám phá dữ liệu, vẽ biểu đồ tương quan (Heatmap) để hiểu mối quan hệ giữa các biến số sức khỏe.
+Chuẩn hóa: Sử dụng StandardScaler để đồng bộ hóa thang đo cho các biến như BMI, Age, v.v.
 
-- Data Preprocessing: Xử lý dữ liệu thô, chuẩn hóa thang đo (StandardScaler) để các biến như BMI và Độ tuổi có vai trò ngang nhau khi tính toán.
+    2. Thử nghiệm mô hình (Baseline Models)
+Chúng tôi đã huấn luyện và so sánh hiệu suất của các thuật toán phổ biến:
 
-- Hyperparameter Tuning: Sử dụng GridSearchCV để máy tự động "dò" ra bộ tham số tốt nhất cho từng thuật toán.
+Logistic Regression: Thiết lập mốc tham chiếu (Baseline).
 
-- Cross-Validation: Kỹ thuật kiểm chứng chéo (K-Fold) để đảm bảo kết quả đạt được là khách quan, không phụ thuộc vào việc chia dữ liệu ngẫu nhiên.
+K-Nearest Neighbors (KNN): Phân loại dựa trên sự tương đồng đặc trưng.
 
-- Overfitting Check: Phân tích khoảng cách (Gap) giữa kết quả trên tập huấn luyện và tập kiểm tra để đảm bảo mô hình có khả năng dự báo thực tế.
+Random Forest / XGBoost: Kiểm tra tầm quan trọng của các biến (Feature Importance).
+- Giai đoạn 2: Tích hợp Deep Learning & Ảnh Võng Mạc (Multimodal)
+Sau khi có bộ khung dữ liệu bảng, chúng tôi nâng cấp hệ thống bằng cách tích hợp thêm Ảnh võng mạc (Retinal Images) để tăng độ chính xác trong chẩn đoán lâm sàng.
 
-- Evaluation Metrics: Đánh giá đa chiều qua các chỉ số Accuracy (Độ chính xác) và F1-Score (Sự cân bằng giữa độ nhạy và độ đặc hiệu).
+    1. Khớp dữ liệu (Data Matching)
+Thực hiện kỹ thuật Data Merging: Khớp chính xác ID của từng bệnh nhân trong file CSV với đường dẫn file ảnh (image_path) tương ứng.
+
+Đảm bảo mỗi bộ chỉ số sức khỏe đều có một hình ảnh minh chứng thực tế từ đáy mắt.
+
+    2. Kiến trúc mô hình Đa phương thức (Hybrid Architecture)
+Hệ thống sử dụng mạng Neural kết hợp (Late Fusion):
+
+Nhánh Xử lý Ảnh: Sử dụng MobileNetV2 (CNN) để trích xuất các dấu hiệu bệnh lý từ võng mạc.
+
+Nhánh Xử lý Số: Sử dụng Multi-Layer Perceptron (MLP) để phân tích các chỉ số sức khỏe.
+
+Hợp nhất (Concatenation): Kết nối hai nguồn đặc trưng để đưa ra kết luận cuối cùng qua hàm Sigmoid.
+
+- Triển khai Ứng dụng (Deployment)
+Toàn bộ dự án được đóng gói vào ứng dụng Streamlit, cho phép:
+
+    + Nhập các chỉ số sức khỏe tương tự như các mô hình ở Giai đoạn 1.
+
+    + Upload ảnh võng mạc để hệ thống phân tích sâu hơn ở Giai đoạn 2.
+
+    + Đưa ra xác suất mắc bệnh (%) dựa trên sự tổng hợp của cả hai nguồn dữ liệu.
