@@ -46,52 +46,66 @@ with col1:
     user_inputs = {}
 
     for col in columns:
-        if col in ['HighBP', 'HighChol', 'CholCheck', 'Smoker', 'Stroke', 'HeartDiseaseorAttack']:
+        if col in ['Sex', 'HighBP', 'HighChol', 'CholCheck', 'Smoker', 'Stroke', 'HeartDiseaseorAttack','PhysActivity', 'Fruits', 'Veggies', 'HvyAlcoholConsump', 'AnyHealthcare', 'NoDocbcCost', 'GenHlth', 'DiffWalk']:
             user_inputs[col] = st.selectbox(f"{col} (0: Không, 1: Có)", [0, 1])
         elif col == 'BMI':
-            user_inputs[col] = st.number_input(f"Chỉ số {col}", min_value=10.0, max_value=60.0, value=25.0)
+            user_inputs[col] = st.slider("Chỉ số BMI",10,60,25)
         elif col == 'Age':
             user_inputs[col] = st.slider(f"Nhóm tuổi (1-13)", 1, 13, 5)
-        else:
-            user_inputs[col] = st.number_input(f"{col}", value=0.0)
+        elif col == 'Education':
+            user_inputs[col] = st.slider(f"Trình độ học vấn (1-6)", 1, 6, 3)    
+        elif col == 'Income':
+            user_inputs[col] = st.slider(f"Thu nhập (1-8)", 1, 8, 4)        
+        elif col == 'PhysHlth':
+            user_inputs[col] = st.slider(f"Số ngày sức khỏe thể chất không tốt trong 30 ngày qua", 0, 30, 5)
+        elif col == 'MentHlth':
+            user_inputs[col] = st.slider(f"Số ngày sức khỏe tinh thần không tốt trong 30 ngày qua", 0, 30, 5)   
+            
+    
 
 with col2:
-    st.subheader("Phân tích Ảnh Võng mạc")
-    uploaded_file = st.file_uploader("Tải lên ảnh đáy mắt (Retinal Image)...", type=["jpg", "jpeg", "png"])
+    st.subheader("Phân tích Ảnh Võng mạc (Không bắt buộc)")
+    uploaded_file = st.file_uploader("Tải lên ảnh đáy mắt...", type=["jpg", "jpeg", "png"])
     
+    # Hiển thị ảnh nếu có
     if uploaded_file is not None:
         img = Image.open(uploaded_file)
         st.image(img, caption='Ảnh đã tải lên', width=350)
-        
-        if st.button("BẮT ĐẦU PHÂN TÍCH"):
-            with st.spinner('Đang xử lý dữ liệu...'):
-  
+    else:
+        st.info("Chưa có ảnh. Hệ thống sẽ phân tích dựa trên chỉ số sức khỏe.")
+
+    # Nút bấm nằm ngoài điều kiện if uploaded_file
+    if st.button("BẮT ĐẦU PHÂN TÍCH"):
+        with st.spinner('Đang xử lý dữ liệu...'):
+            # --- XỬ LÝ ẢNH ---
+            if uploaded_file is not None:
+                # Nếu có ảnh: Xử lý ảnh thật
                 img_array = np.array(img.convert('RGB'))
                 img_input = cv2.resize(img_array, (224, 224))
-                img_input = img_input / 255.0
-                img_input = np.expand_dims(img_input, axis=0)
+            else:
+                # Nếu KHÔNG có ảnh: Tạo ảnh đen (Dummy Input)
+                img_input = np.zeros((224, 224, 3), dtype=np.float32)
+            
+            img_input = img_input / 255.0
+            img_input = np.expand_dims(img_input, axis=0)
 
-                # 2. Tiền xử lý dữ liệu bảng
-                df_input = pd.DataFrame([user_inputs])
-                tab_input = scaler.transform(df_input)
+            # --- XỬ LÝ DỮ LIỆU BẢNG ---
+            df_input = pd.DataFrame([user_inputs])
+            tab_input = scaler.transform(df_input)
 
-                # 3. Dự đoán từ mô hình Multimodal
-                prediction = model.predict({
-                    "image_input": img_input, 
-                    "tabular_input": tab_input
-                })
-                prob = prediction[0][0]
+            # --- DỰ ĐOÁN ---
+            prediction = model.predict({
+                "image_input": img_input, 
+                "tabular_input": tab_input
+            })
+            prob = prediction[0][0]
 
-    
-                st.divider()
-                if prob > 0.5:
-                    st.error(f"### KẾT QUẢ: CÓ DẤU HIỆU BỆNH")
-                    st.write(f"**Độ tin cậy của AI:** {prob*100:.2f}%")
-                    st.warning("Chú ý: Đây là kết quả tham khảo từ AI, bạn cần tham vấn ý kiến bác sĩ chuyên khoa.")
-                else:
-                    st.success(f"### KẾT QUẢ: BÌNH THƯỜNG")
-                    st.write(f"**Độ tin cậy của AI:** {(1-prob)*100:.2f}%")
-                    st.info("Không phát hiện dấu hiệu bất thường trên ảnh và chỉ số sức khỏe.")
-
-
+            # --- HIỂN THỊ KẾT QUẢ ---
+            st.divider()
+            if prob > 0.5:
+                st.error(f"### KẾT QUẢ: CÓ DẤU HIỆU BỆNH")
+                st.write(f"**Độ tin cậy:** {prob*100:.2f}%")
+            else:
+                st.success(f"### KẾT QUẢ: BÌNH THƯỜNG")
+                st.write(f"**Độ tin cậy:** {(1-prob)*100:.2f}%")
 
