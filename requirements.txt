@@ -1,5 +1,5 @@
 streamlit
-tensorflow-cpu==2.15.1
+tensorflow-cpu
 opencv-python-headless
 pandas
 numpy

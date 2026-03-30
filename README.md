@@ -1,5 +1,6 @@
 link app: https://diabetesdisease-app.streamlit.app/
-
+![alt text](image.png)
+![alt text](image-1.png)
 🩺 Hệ Thống Chẩn Đoán Tiểu Đường Đa Phương Thức (Multimodal AI)
 Dự án này được chia làm 2 giai đoạn phát triển chính nhằm tối ưu hóa khả năng dự đoán dựa trên cả chỉ số lâm sàng và hình ảnh y tế.
 
